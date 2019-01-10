@@ -1,3 +1,5 @@
+require 'pry'
+
 class Song
   attr_accessor :name, :artist_name
   @@all = []
@@ -10,4 +12,75 @@ class Song
     self.class.all << self
   end
 
+  def self.create
+    song = self.new
+    song.save
+    song
+  end
+
+  def self.new_by_name(song_name)
+    song = self.new
+    song.name = song_name
+    song
+  end
+
+  def self.create_by_name(song_name)
+    song = self.create
+    song.name = song_name
+    song
+  end
+
+
+  def self.find_by_name(song_name)
+    self.all.find do |song|
+      song.name == song_name
+    end
+  end
+
+
+  def self.find_or_create_by_name(song_name)
+    self.find_by_name(song_name) || self.create_by_name(song_name)
+  end
+
+
+  def self.alphabetical
+    self.all.sort_by {|song| song.name}
+  end
+
+
+  def self.new_from_filename(filename)
+    filename_array = filename.split(" - ")
+    artist = filename_array[0]
+    song_name = filename_array[1].sub!(".mp3", "")
+
+    song = self.new
+    song.name = song_name
+    song.artist_name = artist
+    song
+  end
+
+  def self.create_from_filename(filename)
+
+    filename_array = filename.split(" - ")
+    artist = filename_array[0]
+    song_name = filename_array[1].sub!(".mp3", "")
+
+    song = self.create_by_name(song_name)
+    song.artist_name = artist
+    song
+
+  end
+
+
+  def self.destroy_all
+    self.all.clear
+  end
+
 end
+
+# binding.pry
+#
+# the_middle = Song.create_by_name("The Middle")
+# blank_space = Song.create_by_name("Blank Space")
+# closer = Song.create_by_name("Closer")
+# sorry = Song.create_by_name("Sorry")
